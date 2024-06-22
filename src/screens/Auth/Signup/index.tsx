@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ActivityIndicator, Image, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin';
 
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -10,11 +10,9 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 
-import Logo from '../../../assets/logo.png';
-import GoogleLogo from '../../../assets/google-logo.png';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const SignupFormSchema = z.object({
-  username: z.string({ message: 'Campo obrigatório' }).min(0, 'Insira seu nome'),
   email: z.string({ message: 'Campo obrigatório' }).email('Insira um email válido'),
   password: z.string({ message: 'Campo obrigatório' }).min(0, 'Insira sua senha'),
 });
@@ -23,7 +21,7 @@ type SignupForm = z.infer<typeof SignupFormSchema>;
 
 GoogleSignin.configure({
   scopes: ['email', 'profile'],
-  webClientId: '227858259368-s9d98824oek9ebdu1scjn8svp2unmsjo.apps.googleusercontent.com'
+  webClientId: '45169531522-27netf8pkv1v2b7rikr9pkitk8u2glqv.apps.googleusercontent.com'
 });
 
 export function Signup() {
@@ -33,41 +31,27 @@ export function Signup() {
     mode: 'onChange',
   });
 
-  function loginWithGoogle() {
+  async function loginWithGoogle() {
     try {
       setIsLoading(true);
-      GoogleSignin.hasPlayServices();
-      GoogleSignin.signIn().then((googleCredentials) => {
-        auth().signInWithCredential(auth.GoogleAuthProvider.credential(googleCredentials.idToken))
-          .then(() => {
-            firestore().collection('users')
-              .add({
-                name: googleCredentials.user.name,
-              })
-              .then(() => {
-                console.log('User added!');
-              });
-          })
-          .catch(error => console.log(error));
-      });
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      const { idToken } = await GoogleSignin.signIn();
+
+      // Create a Google credential with the token
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+      // Sign-in the user with the credential
+      return auth().signInWithCredential(googleCredential);
     } catch (error) {
       console.log(error);
       setIsLoading(false);
     }
   };
 
-  function handleSignup({ username, email, password }: SignupForm) {
+  function handleSignup({ email, password }: SignupForm) {
     try {
       setIsLoading(true);
-      auth().createUserWithEmailAndPassword(email, password).then(credentials => {
-        firestore().collection('users')
-          .add({
-            name: username,
-          })
-          .then(() => {
-            console.log('User added!');
-          });
-      });
+      auth().createUserWithEmailAndPassword(email, password);
     } catch (error) {
       console.log(error);
       setIsLoading(false);
@@ -75,31 +59,18 @@ export function Signup() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Image
-        source={Logo}
-        style={styles.logo}
-        resizeMode='contain'
-      />
+    <LinearGradient style={styles.container} colors={['#1C8F09', '#177407', '#082903']}>
+      <Text style={styles.title}>
+        {'Pimentinhas\ndo\nSandiego'}
+      </Text>
 
-      <KeyboardAvoidingView behavior='padding' style={{ gap: 20 }}>
+      <KeyboardAvoidingView behavior='padding' style={{ gap: 10 }}>
+        <Text style={[styles.title, { color: 'black' }]}>
+          Criar conta
+        </Text>
+
         <View style={styles.textfield}>
-          <Text style={styles.text}>Nome de usuário</Text>
-          <Controller
-            name='username'
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <TextInput
-                value={value}
-                style={styles.input}
-                onChangeText={onChange}
-                placeholder='Digite seu nome'
-              />
-            )} />
-          {errors.username?.message && <Text style={[styles.text, { color: 'red', alignSelf: 'flex-end' }]}>{errors.username.message}</Text>}
-        </View>
-        <View style={styles.textfield}>
-          <Text style={styles.text}>E-mail</Text>
+          <Text>E-mail</Text>
           <Controller
             name='email'
             control={control}
@@ -112,10 +83,11 @@ export function Signup() {
                 placeholder='Digite seu email'
               />
             )} />
-          {errors.email?.message && <Text style={[styles.text, { color: 'red', alignSelf: 'flex-end' }]}>{errors.email.message}</Text>}
+          {errors.email?.message && <Text style={[{ color: 'red', alignSelf: 'flex-end' }]}>{errors.email.message}</Text>}
         </View>
+
         <View style={styles.textfield}>
-          <Text style={styles.text}>Senha</Text>
+          <Text>Senha</Text>
           <Controller
             name='password'
             control={control}
@@ -129,24 +101,25 @@ export function Signup() {
                 secureTextEntry
               />
             )} />
-          {errors.password?.message && <Text style={[styles.text, { color: 'red', alignSelf: 'flex-end' }]}>{errors.password.message}</Text>}
+          {errors.password?.message && <Text style={[{ color: 'red', alignSelf: 'flex-end' }]}>{errors.password.message}</Text>}
         </View>
       </KeyboardAvoidingView>
 
-      <View style={{ gap: 20 }}>
-        <TouchableOpacity style={styles.button} onPress={handleSubmit(handleSignup)} disabled={isLoading}>
-          <Text style={styles.text}>{isLoading ? <ActivityIndicator color='#02084B' /> : 'Criar conta'}</Text>
+      <View style={{ gap: 10 }}>
+        <TouchableOpacity style={styles.button} onPress={handleSubmit(handleSignup)}>
+          <Text style={{ color: 'white' }}>{isLoading ? <ActivityIndicator color='white' /> : 'Criar e entrar'}</Text>
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={{ alignSelf: 'center' }} onPress={loginWithGoogle} disabled={isLoading}>
-        <Image
-          source={GoogleLogo}
-          style={{ width: 32, height: 32 }}
-          resizeMode='contain'
-        />
-      </TouchableOpacity>
-    </SafeAreaView>
+      <View style={{ gap: 10 }}>
+        <View style={{ gap: 5, flexDirection: 'row', alignItems: 'center' }}>
+          <View style={styles.hr} />
+          <Text style={{ color: 'white' }}>continuar com</Text>
+          <View style={styles.hr} />
+        </View>
+        <GoogleSigninButton style={{ width: '100%' }} onPress={loginWithGoogle} />
+      </View>
+    </LinearGradient>
   )
 }
 
@@ -156,7 +129,6 @@ const styles = StyleSheet.create({
     gap: 30,
     padding: 32,
     justifyContent: 'space-around',
-    backgroundColor: '#A9B1B6'
   },
   logo: {
     alignSelf: 'center',
@@ -164,7 +136,13 @@ const styles = StyleSheet.create({
     height: 160
   },
   textfield: {
-    gap: 10
+    gap: 5
+  },
+  title: {
+    fontWeight: '600',
+    fontSize: 30,
+    textAlign: 'center',
+    color: 'white'
   },
   input: {
     backgroundColor: '#D9D9D9',
@@ -172,16 +150,14 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10
   },
-  text: {
-    color: '#02084B',
-  },
   hr: {
     height: 0.8,
-    backgroundColor: '#02084B'
+    backgroundColor: 'white',
+    flex: 1
   },
   button: {
-    backgroundColor: '#FFA500',
-    borderRadius: 10,
+    backgroundColor: 'black',
+    borderRadius: 5,
     padding: 10,
     justifyContent: 'center',
     alignItems: 'center'

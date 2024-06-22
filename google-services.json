@@ -13,7 +13,20 @@
           "package_name": "com.m4rcusml.pimentinhas"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "45169531522-autppur3pc1ugtsg9d0dtqr277lf8tpa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.m4rcusml.pimentinhas",
+            "certificate_hash": "c22ea95ce21394a2a9cca1c1494f79443d89141c"
+          }
+        },
+        {
+          "client_id": "45169531522-27netf8pkv1v2b7rikr9pkitk8u2glqv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDD-PgTPja1NkSfB6AFDA8WFl1jSdDCzg8"
@@ -21,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "45169531522-27netf8pkv1v2b7rikr9pkitk8u2glqv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

@@ -16,9 +16,6 @@
       "@react-native-firebase/auth",
       "@react-native-google-signin/google-signin"
     ],
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
       "googleServicesFile": "./google-services.json",
       "package": "com.m4rcusml.pimentinhas",
@@ -26,6 +23,9 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
+    },
+    "ios": {
+      "supportsTablet": true
     },
     "web": {
       "favicon": "./assets/favicon.png"

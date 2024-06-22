@@ -1,11 +1,10 @@
-import { Alert, Image, TouchableOpacity } from 'react-native';
+import { Alert, TouchableOpacity } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { Entypo } from '@expo/vector-icons';
 import { Home } from '../screens/Home';
 
 import auth from '@react-native-firebase/auth';
-import Logo from '../assets/logo.png';
 
 const { Navigator, Screen } = createNativeStackNavigator();
 
@@ -32,17 +31,8 @@ export function AppRoutes() {
     <Navigator
       screenOptions={{
         headerTransparent: true,
-        headerTitleAlign: 'center',
-        headerTitle: () => (
-          <Image
-            resizeMode='contain'
-            source={Logo}
-            style={{
-              width: 90,
-              aspectRatio: '16 / 9'
-            }}
-          />
-        ),
+        title: 'Pimentinhas do Sandiego',
+        headerTintColor: 'white',
         headerRight: () => (
           <TouchableOpacity onPress={signOut}>
             <Entypo

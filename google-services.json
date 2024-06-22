@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "45169531522",
+    "firebase_url": "https://sim2-ad669-default-rtdb.firebaseio.com",
+    "project_id": "sim2-ad669",
+    "storage_bucket": "sim2-ad669.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:45169531522:android:25e2900f38b857a7dfb29b",
+        "android_client_info": {
+          "package_name": "com.m4rcusml.pimentinhas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDD-PgTPja1NkSfB6AFDA8WFl1jSdDCzg8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
